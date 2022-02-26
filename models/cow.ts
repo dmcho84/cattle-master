@@ -1,9 +1,10 @@
 'use strict';
 
-import { Model } from 'sequelize';
+import { Model, UUIDV4 } from 'sequelize';
 
 interface CowAttributes {
   id: string;
+  identification: string;
   nickname: string;
   registration: string;
   birthday: string;
@@ -19,6 +20,7 @@ interface CowAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
   class Cow extends Model<CowAttributes> implements CowAttributes {
     id!: string;
+    identification!: string;
     nickname!: string;
     registration!: string;
     birthday!: string;
@@ -33,7 +35,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
     static associate(models: any) {
       Cow.belongsTo(models.Farm);
       Cow.hasMany(models.Estrus);
-      // hasMany Insemination
+      Cow.hasMany(models.Insemination);
+      Cow.hasMany(models.Boarn, { as: 'Children', foreignKey: 'MotherId' });
+
+      // Cow.hasOne(models.Boarn, { as: 'self', foreignKey: 'SelfId' });
+      // Cow.belongsTo(models.Boarn, { as: 'Self', foreignKey: 'SelfId' });
+
+      // Cow.belongsTo(models.Boarn, { as: 'Self' });
       // hasMany Delivery
       // hasMany Feeding
     }
@@ -41,9 +49,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
   Cow.init(
     {
       id: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue: UUIDV4,
         allowNull: false,
         primaryKey: true,
+        unique: true,
+      },
+      identification: {
+        type: DataTypes.STRING,
         unique: true,
       },
       nickname: {

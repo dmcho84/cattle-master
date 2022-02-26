@@ -18,7 +18,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       Farm.belongsToMany(models.User, {
         through: 'Members',
       });
-
       Farm.hasMany(models.Cow);
     }
   }

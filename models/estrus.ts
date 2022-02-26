@@ -2,21 +2,21 @@
 
 import { Model } from 'sequelize';
 
-interface CowAttributes {
+interface EstrusAttributes {
   id: number;
   detection: string;
   allow: string;
   etc: string;
 }
 
-module.exports = (sequelize, DataTypes) => {
-  class Estrus extends Model {
+module.exports = (sequelize: any, DataTypes: any) => {
+  class Estrus extends Model<EstrusAttributes> implements EstrusAttributes {
     id!: number;
     detection!: string;
     allow!: string;
     etc!: string;
 
-    static associate(models) {
+    static associate(models: any) {
       Estrus.belongsTo(models.Cow);
     }
   }
