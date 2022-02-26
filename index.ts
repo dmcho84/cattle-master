@@ -31,7 +31,6 @@ import { cows } from './seeders/cows';
 
 // seedersCows();
 
-
 // userGenerater();
 
 db.sequelize.sync({ force: false }).then(() => {

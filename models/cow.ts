@@ -16,12 +16,8 @@ interface CowAttributes {
   mother: string;
 }
 
-
-
-
 module.exports = (sequelize: any, DataTypes: any) => {
   class Cow extends Model<CowAttributes> implements CowAttributes {
-    
     id!: string;
     nickname!: string;
     registration!: string;
@@ -33,9 +29,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     grandFather!: string;
     father!: string;
     mother!: string;
-    
-    static associate(models: any) {
 
+    static associate(models: any) {
       Cow.belongsTo(models.Farm);
       Cow.hasMany(models.Estrus);
       // hasMany Insemination
@@ -43,48 +38,51 @@ module.exports = (sequelize: any, DataTypes: any) => {
       // hasMany Feeding
     }
   }
-  Cow.init({
-    id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      primaryKey: true,
-      unique: true,
+  Cow.init(
+    {
+      id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+        unique: true,
+      },
+      nickname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      registration: {
+        type: DataTypes.STRING,
+      },
+      birthday: {
+        type: DataTypes.DATE,
+      },
+      gender: {
+        type: DataTypes.ENUM('male', 'female', 'steer'),
+        allowNull: false,
+      },
+      classification: {
+        type: DataTypes.STRING,
+      },
+      passage: {
+        type: DataTypes.STRING,
+      },
+      greatGrandFather: {
+        type: DataTypes.STRING,
+      },
+      grandFather: {
+        type: DataTypes.STRING,
+      },
+      father: {
+        type: DataTypes.STRING,
+      },
+      mother: {
+        type: DataTypes.STRING,
+      },
     },
-    nickname: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'Cow',
     },
-    registration: {
-      type: DataTypes.STRING,
-    },
-    birthday: {
-      type: DataTypes.DATE,
-    },
-    gender: {
-      type: DataTypes.ENUM('male', 'female', 'steer'),
-      allowNull: false,
-    },
-    classification: {
-      type: DataTypes.STRING,
-    },
-    passage: {
-      type: DataTypes.STRING,
-    },
-    greatGrandFather: {
-      type: DataTypes.STRING,
-    },
-    grandFather: {
-      type: DataTypes.STRING,
-    },
-    father: {
-      type: DataTypes.STRING,
-    },
-    mother: {
-      type: DataTypes.STRING,
-    },
-  }, {
-    sequelize,
-    modelName: 'Cow',
-  });
+  );
   return Cow;
 };

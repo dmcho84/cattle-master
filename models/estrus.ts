@@ -11,7 +11,6 @@ interface CowAttributes {
 
 module.exports = (sequelize, DataTypes) => {
   class Estrus extends Model {
-
     id!: number;
     detection!: string;
     allow!: string;
@@ -21,26 +20,29 @@ module.exports = (sequelize, DataTypes) => {
       Estrus.belongsTo(models.Cow);
     }
   }
-  Estrus.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
+  Estrus.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      detection: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      allow: {
+        type: DataTypes.DATE,
+      },
+      etc: {
+        type: DataTypes.STRING,
+      },
     },
-    detection: {
-      type: DataTypes.DATE,
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'Estrus',
     },
-    allow: {
-      type: DataTypes.DATE,
-    },
-    etc: {
-      type: DataTypes.STRING,
-    }
-  }, {
-    sequelize,
-    modelName: 'Estrus',
-  });
+  );
   return Estrus;
 };

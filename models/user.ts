@@ -10,7 +10,6 @@ interface UserAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
   class User extends Model<UserAttributes> implements UserAttributes {
-    
     id!: string;
     name!: string;
     email!: string;
@@ -18,8 +17,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       User.belongsToMany(models.Farm, {
-        through: 'Members'
-      })
+        through: 'Members',
+      });
     }
   }
   User.init(
