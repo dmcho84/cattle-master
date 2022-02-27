@@ -37,6 +37,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
       Cow.hasMany(models.Estrus);
       Cow.hasMany(models.Insemination);
       Cow.hasMany(models.Boarn, { as: 'Children', foreignKey: 'MotherId' });
+      Cow.hasMany(models.Feeding);
+      // Cow.hasOne(models.Cow, { as: 'Mother', foreignKey: 'MotherId' });
 
       // Cow.hasOne(models.Boarn, { as: 'self', foreignKey: 'SelfId' });
       // Cow.belongsTo(models.Boarn, { as: 'Self', foreignKey: 'SelfId' });
