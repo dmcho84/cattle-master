@@ -20,7 +20,16 @@ const seedersGenerator = async (list: any[], model: string) => {
         default: { ...item },
       })
       .then((data: any) => {
+        // console.log(model, { data });
         result.push(data[0].dataValues);
+      })
+      .catch(async (err: any) => {
+        console.error(err);
+        // const find = await db[model].findOne({
+        //   [err.errors[0].path]: item[err.errors[0].path],
+        // });
+        // console.log({ find });
+        // result.push(find);
       });
   }
   return result;
@@ -85,6 +94,7 @@ app.get('/', (req, res) => {
 app.get('/seeder', async (req, res, next) => {
   const userList = await seedersGenerator(users, 'User');
   const farmList = await seedersGenerator(farms, 'Farm');
+  console.log({ userList });
   let memebersList = await members.map((m, i) => {
     m.UserId = userList[i].id;
     return m;
