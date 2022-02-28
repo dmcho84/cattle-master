@@ -16,6 +16,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     check!: boolean;
 
     static associate(models: any) {
+      Insemination.belongsTo(models.User); // 작성자
+      Insemination.belongsTo(models.Farm);
       Insemination.belongsTo(models.Cow);
     }
   }

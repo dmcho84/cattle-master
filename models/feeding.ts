@@ -13,6 +13,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     date!: string;
 
     static associate(models: any) {
+      Feeding.belongsTo(models.User); // 작성자
+      Feeding.belongsTo(models.Farm);
       Feeding.belongsTo(models.Cow);
       Feeding.belongsTo(models.Feed);
     }

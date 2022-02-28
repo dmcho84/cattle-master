@@ -23,8 +23,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       // Boarn.hasOne(models.Cow, { as: 'Self' });
-      Boarn.belongsTo(models.Cow, { as: 'Children', foreignKey: 'MotherId' });
+      Boarn.belongsTo(models.Cow, { as: 'Children', foreignKey: 'CowId' });
       Boarn.belongsTo(models.Cow, { as: 'Self', foreignKey: 'selfId' });
+      Boarn.belongsTo(models.User); // 작성자
+      Boarn.belongsTo(models.Farm); // 작성자
+
       // Boarn.hasOne(models.Cow, { as: 'Self', foreignKey: 'SelfId' });
     }
   }
@@ -56,14 +59,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // selfId: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      //   references: {
-      //     model: 'Cows',
-      //     key: 'id',
-      //   },
-      // },
     },
     {
       sequelize,

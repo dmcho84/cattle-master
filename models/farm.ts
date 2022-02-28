@@ -6,6 +6,7 @@ interface FarmAttributes {
   id: number;
   name: string;
   code: string;
+  // owner: string;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -13,12 +14,18 @@ module.exports = (sequelize: any, DataTypes: any) => {
     id!: number;
     name!: string;
     code!: string;
+    // owner!: string;
 
     static associate(models: any) {
       Farm.belongsToMany(models.User, {
         through: 'Members',
       });
-      Farm.hasMany(models.Cow);
+      Farm.belongsTo(models.User, { as: 'Master', foreignKey: 'MasterId' });
+      Farm.hasMany(models.Cow); // 개체정보
+      Farm.hasMany(models.Boarn); // 분만
+      Farm.hasMany(models.Estrus); // 발정
+      Farm.hasMany(models.Feeding); // 사료 급여
+      Farm.hasMany(models.Insemination); // 인공수정
     }
   }
   Farm.init(
@@ -38,6 +45,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
         allowNull: true,
         unique: true,
       },
+      // owner: {
+      //   type: DataTypes.UUID,
+      //   allowNull: false,
+      //   references: {
+      //     model: 'Users',
+      //     key: 'id',
+      //   },
+      // },
     },
     {
       sequelize,

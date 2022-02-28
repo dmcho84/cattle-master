@@ -20,6 +20,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     status!: boolean;
 
     static associate(models: any) {
+      Feed.belongsTo(models.User); // 작성자
+      Feed.belongsTo(models.Farm);
       Feed.hasMany(models.Feeding);
     }
   }

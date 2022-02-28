@@ -17,6 +17,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     etc!: string;
 
     static associate(models: any) {
+      Estrus.belongsTo(models.User); // 작성자
+      Estrus.belongsTo(models.Farm);
       Estrus.belongsTo(models.Cow);
     }
   }

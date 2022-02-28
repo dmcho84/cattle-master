@@ -33,10 +33,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     mother!: string;
 
     static associate(models: any) {
+      Cow.belongsTo(models.User); // 작성자
       Cow.belongsTo(models.Farm);
       Cow.hasMany(models.Estrus);
       Cow.hasMany(models.Insemination);
-      Cow.hasMany(models.Boarn, { as: 'Children', foreignKey: 'MotherId' });
+      Cow.hasMany(models.Boarn, { as: 'Children', foreignKey: 'CowId' });
       Cow.hasMany(models.Feeding);
       // Cow.hasOne(models.Cow, { as: 'Mother', foreignKey: 'MotherId' });
 

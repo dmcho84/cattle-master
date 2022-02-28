@@ -108,7 +108,7 @@ app.get('/seeder', async (req, res, next) => {
   res.send({ userList, farmList, memberList, cowList, feedList, boarnList });
 });
 
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   app.listen(port, () => {
     console.log(`App listening on PORT ${port}`);
   });
