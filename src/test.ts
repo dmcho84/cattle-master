@@ -1,8 +1,5 @@
-import express from 'express';
-
-const app = express();
-const port = process.env.PORT || 3000;
 import db from './models';
+
 import { users } from './seeders/users';
 import { farms } from './seeders/farms';
 import { members } from './seeders/members';
@@ -14,13 +11,14 @@ import { feedings } from './seeders/feedings';
 const seedersGenerator = async (list: any[], model: string) => {
   let result: any[] = [];
   for (const item of list) {
+    // console.log({ item });
     await db[model]
       .findOrCreate({
         where: { ...item },
         default: { ...item },
       })
       .then((data: any) => {
-        // console.log(model, { data });
+        // console.log(model, data[0].dataValues);
         result.push(data[0].dataValues);
       })
       .catch(async (err: any) => {
@@ -36,7 +34,7 @@ const seedersGenerator = async (list: any[], model: string) => {
 };
 
 /** post Boarn */
-const seedersBoarns = async () => {
+const seedersBoarns = async (UserId: string, FarmId: number) => {
   for (const boarn of boarns) {
     const mother = await db.Cow.findOne();
     const cow = {
@@ -45,6 +43,8 @@ const seedersBoarns = async () => {
       gender: boarn.gender,
       classification: '혈통',
       mother: mother.id,
+      UserId,
+      FarmId,
     };
     const cowList = await seedersGenerator([cow], 'Cow');
     const boarnList = await seedersGenerator(
@@ -55,26 +55,52 @@ const seedersBoarns = async () => {
           weight: boarn.weight,
           status: boarn.status,
           etc: boarn.etc,
-          MotherId: mother.id,
+          CowId: mother.id,
           selfId: cowList[0].id,
+          UserId,
+          FarmId,
         },
       ],
       'Boarn',
     );
 
     return { boarnList, cowList };
-
-    // const self = await db.Cow.create();
-
-    // await db.Boarn.create({
-    //   ...boarn,
-    //   selfId: self.id,
-    // });
   }
 };
 
-/** get Cow Info */
-app.get('/', (req, res) => {
+const setData = (list: any[], obj?: object): any[] => {
+  let arr: any[] = [];
+
+  for (const li of list) {
+    let lid = {
+      ...li,
+      ...obj,
+    };
+    arr.push(lid);
+  }
+  return arr;
+};
+
+const seeder = async (req: any, res: any) => {
+  const userList = await seedersGenerator(users, 'User');
+  const UserId: string = userList[0].id;
+  const f = setData(farms, { MasterId: UserId });
+  const farmList = await seedersGenerator(f, 'Farm');
+  const FarmId: number = farmList[0].id;
+
+  const m = setData(members, { UserId, FarmId });
+  console.log({ m, UserId, FarmId });
+  const memberList = await seedersGenerator(m, 'Member');
+  const c = setData(cows, { UserId, FarmId });
+  const cowList = await seedersGenerator(c, 'Cow');
+  const fe = setData(feeds, { UserId, FarmId });
+  const feedList = await seedersGenerator(fe, 'Feed');
+  const boarnList = await seedersBoarns(UserId, FarmId);
+
+  res.send({ userList, farmList, memberList, cowList, feedList, boarnList });
+};
+
+const getCows = async (req: any, res: any) => {
   db.Cow.findAll({
     include: [
       {
@@ -89,27 +115,6 @@ app.get('/', (req, res) => {
   })
     .then((result: object) => res.json(result))
     .catch((err: object) => console.error(err));
-});
+};
 
-app.get('/seeder', async (req, res, next) => {
-  const userList = await seedersGenerator(users, 'User');
-  const farmList = await seedersGenerator(farms, 'Farm');
-  console.log({ userList });
-  let memebersList = await members.map((m, i) => {
-    m.UserId = userList[i].id;
-    return m;
-  });
-  console.log(memebersList);
-  const memberList = await seedersGenerator(memebersList, 'Member');
-  const cowList = await seedersGenerator(cows, 'Cow');
-  const feedList = await seedersGenerator(feeds, 'Feed');
-  const boarnList = await seedersBoarns();
-
-  res.send({ userList, farmList, memberList, cowList, feedList, boarnList });
-});
-
-db.sequelize.sync({ force: true }).then(() => {
-  app.listen(port, () => {
-    console.log(`App listening on PORT ${port}`);
-  });
-});
+export { seeder, seedersBoarns, getCows };
