@@ -8,50 +8,25 @@ import db from './models';
 import router from './router';
 import * as test from './test';
 
-// class Server {
-//   public app: express.Application;
+import passport from 'passport';
+import passportConfig, { passportMiddleware } from './passport';
 
-//   constructor() {
-//     this.app = express();
-//     // this.config();
-//   }
-
-//   public config(): void {
-//     this.app.set('port', process.env.PORT || 3000);
-//     this.app.use(express.json());
-//     this.app.use(express.urlencoded({ extended: false }));
-//     this.app.use(compression());
-//     this.app.use(cors());
-//   }
-
-//   public routes(): void {
-//     this.app.use('/' router);
-
-//   }
-
-//   public start(): void {
-//     db.sequelize.sync({ force: false }).then(() => {
-//       app.listen(port, () => {
-//         console.log(`App listening on PORT ${port}`);
-//       });
-//     });
-//   }
-// }
+app.use(passport.initialize());
+passportConfig();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(cors());
 
+app.use(passportMiddleware);
+
 /** get Cow Info */
 app.get('/', test.getCows);
 app.use('/', router);
 
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   app.listen(port, () => {
     console.log(`App listening on PORT ${port}`);
   });
 });
-
-// const server = new Server();
-// server.start();
