@@ -6,10 +6,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 import db from './models';
 import router from './router';
-import * as test from './test';
 
 import passport from 'passport';
-import passportConfig, { passportMiddleware } from './passport';
+import passportConfig from './passport';
+import { passportMiddleware } from './controllers/middleware/passport';
 
 app.use(passport.initialize());
 passportConfig();
@@ -22,10 +22,9 @@ app.use(cors());
 app.use(passportMiddleware);
 
 /** get Cow Info */
-app.get('/', test.getCows);
 app.use('/', router);
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   app.listen(port, () => {
     console.log(`App listening on PORT ${port}`);
   });

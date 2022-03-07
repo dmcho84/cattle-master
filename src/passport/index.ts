@@ -1,4 +1,3 @@
-import express, { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 // import passportLocal from 'passport-local';
 // const LocalStrategy = passportLocal.Strategy;
@@ -49,7 +48,7 @@ const JWTVerify = async (jwtPayload: any, done: any) => {
       where: { id: jwtPayload.id },
       include: { model: db.Farm },
     });
-    console.log({ user });
+    // console.log({ user: user.get({ plain: true }) });
     // 유저 데이터가 있다면 유저 데이터 객체 전송
     if (user) {
       done(null, user);
@@ -67,23 +66,3 @@ export default () => {
   passport.use('local', new LocalStrategy(passportConfig, passportVerify));
   passport.use('jwt', new JWTStrategy(JWTConfig, JWTVerify));
 };
-
-export const passportMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) =>
-  passport.authenticate('jwt', { session: false }, (error, user) => {
-    //verifyUser에서 user를 찾았다면 서버에게 요청하는 req객체의 user에 담아서 서버에게 넘겨줌
-    if (user) {
-      req.user = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        Farms: user.Farms,
-      };
-    }
-    next();
-  })(req, res, next);
-
-export const mustLogedIn = passport.authenticate('jwt', { session: false });

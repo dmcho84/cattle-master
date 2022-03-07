@@ -43,7 +43,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       code: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true,
       },
       // owner: {
       //   type: DataTypes.UUID,
