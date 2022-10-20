@@ -10,6 +10,7 @@ const { ExtractJwt, Strategy: JWTStrategy } = require('passport-jwt');
 const passportConfig = { usernameField: 'email', passwordField: 'password' };
 const passportVerify = async (email: string, password: string, done: any) => {
   try {
+    console.log({email, password})
     // 유저 아이디로 일치하는 유저 데이터 검색
     const user = await db.User.findOne({ where: { email } });
     // 검색된 유저 데이터가 없다면 에러 표시

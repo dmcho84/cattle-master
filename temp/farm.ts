@@ -18,7 +18,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       Farm.belongsToMany(models.User, {
-        through: 'Member',
+        through: 'Members',
       });
       Farm.belongsTo(models.User, { as: 'Master', foreignKey: 'MasterId' });
       Farm.hasMany(models.Cow); // 개체정보

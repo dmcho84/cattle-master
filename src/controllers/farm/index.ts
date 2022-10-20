@@ -7,46 +7,75 @@ import db from '../../models';
 //   user: typeof db.User;
 // }
 /** Farm 생성 */
-export const create = (req: any, res: Response, next: NextFunction) => {
+export const create = async (req: any, res: Response, next: NextFunction) => {
   try {
     const { name, code } = req.body;
     const MasterId = req.user.id;
 
     console.log({ MasterId });
 
-    db.Farm.create({ name, code, MasterId })
-      .then(async (farm: any) => {
-        const plainFarm = farm.get({ plain: true });
-        console.log({ plainFarm });
 
-        db.Member.create({ UserId: MasterId, FarmId: farm.id }).then(
-          async (member: any) => {
-            const plainMember = member.get({ plain: true });
-            console.log({ plainMember });
+    const generateFarm = await db.Farm.create({ name, code, MasterId });
+    const settingOwner = await db.Member.create({ UserId: MasterId, FarmId: generateFarm.id, position: "owner"});
+    const result = await db.Farm.findOne({ where: {name}, include: {
+      model: db.Members,
+      as: "Members",
+    } })
+    // const newFarm = result.get({ plain: true });
 
-            db.User.findOne({
-              where: {
-                id: MasterId,
-              },
-              include: {
-                model: db.Farm,
-              },
-            }).then((user: any) => {
-              const plainUser = user.get({ plain: true });
-              res.json({
-                farm: plainFarm,
-                member: plainMember,
-                user: plainUser,
-              });
-            });
-          },
-        );
-        // res.json(plainFarm);
-      })
-      .catch((err: any) => {
-        console.log(err);
-        next(err);
-      });
+    console.log({
+      generateFarm,
+      settingOwner,
+      result
+    })
+
+
+    // db.Farm.create({ name, code, MasterId })
+    //   .then(async (farm: any) => {
+    //     const plainFarm = await farm.get({ plain: true });
+    //     console.log({ plainFarm });
+
+    //     db.Member.create({ UserId: MasterId, FarmId: farm.id, position: "owner" }).then(
+    //       async (member: any) => {
+    //         const plainMember = member.get({ plain: true });
+    //         console.log({ plainMember });
+            
+    //         db.User.findOne({
+    //           where: {
+    //             id: MasterId,
+    //           },
+    //           include: {
+    //             model: db.Farm,
+    //           },
+    //         }).then(async (user: any) => {
+    //           const plainUser = user.get({ plain: true });
+    //           const resultFarm = await db.Farm.findOne({
+    //             where: { id: plainFarm.id },
+    //             include: db.Member
+    //           }).then((result: any) => {
+    //             const finish = result.get({plain: true})
+    //             res.json({finish})
+    //           })
+    //           // const resultFarm = db.Farm.findOne({
+    //           //   where: { id: plainFarm.id },
+    //           //   include: db.Member
+    //           // }).then((result:any) => {
+    //           //   res.json(result);
+    //           // })
+
+    //           // res.json({
+    //           //   plainFarm,
+    //           //   plainUser
+    //           // });
+    //         });
+    //       },
+    //     );
+    //     // res.json(plainFarm);
+    //   })
+    //   .catch((err: any) => {
+    //     console.log(err);
+    //     next(err);
+    //   });
   } catch (error) {
     console.error(error);
     next(error);

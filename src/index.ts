@@ -24,7 +24,9 @@ app.use(passportMiddleware);
 /** get Cow Info */
 app.use('/', router);
 
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
+
+  
   app.listen(port, () => {
     console.log(`App listening on PORT ${port}`);
   });

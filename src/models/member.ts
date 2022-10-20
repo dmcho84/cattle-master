@@ -1,15 +1,17 @@
 'use strict';
 const { Model } = require('sequelize');
 
-interface FarmAttributes {
+interface MemberAttributes {
   FarmId: number;
   UserId: string;
+  position: string;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-  class Member extends Model {
+  class Member extends Model<MemberAttributes> implements MemberAttributes {
     FarmId!: number;
     UserId!: string;
+    position!: string;
 
     static associate(models: any) {
       // define association here
@@ -35,6 +37,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
           key: 'id',
         },
       },
+      position: {
+        allowNull: false,
+        type: DataTypes.ENUM('owner', 'member', 'observer'),
+        defaultValue: 'observer'
+      }
     },
     {
       sequelize,
